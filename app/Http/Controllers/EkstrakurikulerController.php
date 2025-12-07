@@ -122,10 +122,19 @@ class EkstrakurikulerController extends Controller
             $query->where('user_id', $id);
         })->paginate(10);
 
-        // return view('admin.ekstrakurikuler.index', [
-        //     'title' => 'Ekstrakurikuler',
-        //     'extracurriculars' => $extracurriculars
-        // ]);
+        return view('pembina.ekstrakurikuler.index', [
+            'title' => 'Ekstrakurikuler Saya',
+            'extracurriculars' => $extracurriculars
+        ]);
+    }
+
+    public function peserta(string $id)
+    {
+        $extracurricular = Extracurricular::find($id);
+        return view('pembina.ekstrakurikuler.peserta', [
+            'title' => 'Peserta Ekstrakurikuler',
+            'extracurricular' => $extracurricular,
+        ]);
     }
 
     public function ekstrakurikulerSiswa(string $id)

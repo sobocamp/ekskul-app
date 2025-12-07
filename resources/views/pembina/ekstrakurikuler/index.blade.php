@@ -8,9 +8,9 @@
         margin: 0;
     }
 </style>
-<a href="{{ route('extracurricular') }}" class="btn btn-primary float-end mt-n1">
-    <i class="fa fa-eye"></i> Semua Ekstrakurikuler
-</a>
+{{-- <a href="{{ route('extracurricular.siswa', auth()->user()->id) }}" class="btn btn-primary float-end mt-n1">
+    <i class="fa fa-eye"></i> Lihat Ekstrakurikuler Saya
+</a> --}}
 <div class="mb-3">
     <h1 class="h3 d-inline align-middle">{{ $title }}</h1>
 </div>
@@ -25,32 +25,30 @@
                             <th style="width: 10px;">No.</th>
                             <th>Nama</th>
                             <th>Deskripsi</th>
-                            <th>Pembina</th>
-                            <th width="100px;">Status</th>
+                            {{-- <th>Pembina</th> --}}
+                            <th width="100px;">Peserta</th>
+                            <th width="60px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($extracurriculars as $ekstra)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td class="text-nowrap">{{ $ekstra->name }}</td>
+                            <td>{{ $ekstra->name }}</td>
                             <td>{{ $ekstra->description }}</td>
-                            <td>
+                            {{-- <td>
                                 @foreach($ekstra->pembina as $pb)
                                 <span class="badge bg-primary">{{ $pb->name }}</span>
                                 @endforeach
-                            </td>
-                            <td>
-                                @php
-                                $status = $ekstra->participants->where('id', Auth::user()->id)->first()->pivot->status
-                                @endphp
-                                @if ($status == 'pending')
-                                <span class="badge bg-warning">Pending</span>
-                                @elseif ($status == 'approved')
-                                <span class="badge bg-success">Diterima</span>
-                                @elseif ($status == 'rejected')
-                                <span class="badge bg-danger">Ditolak</span>
-                                @endif
+                            </td> --}}
+                            <td>{{ $ekstra->participants->count() }}</td>
+                            <td class="text-nowrap">
+                                {{-- View --}}
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" class="btn btn-sm btn-primary"
+                                    href="{{ route('extracurricular.peserta', $ekstra->id) }}" title="Lihat Peserta">
+                                    <i data-feather="users"></i>
+                                    Peserta
+                                </a>
                             </td>
                         </tr>
                         @endforeach

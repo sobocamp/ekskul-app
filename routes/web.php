@@ -33,6 +33,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'role:pembina'])->group(function () {
     Route::get('pembina/extracurricular/{id}', [EkstrakurikulerController::class, 'ekstrakurikulerPembina'])->name('extracurricular.pembina');
+    Route::get('pembina/extracurricular/{id}/peserta', [EkstrakurikulerController::class, 'peserta'])->name('extracurricular.peserta');
 });
 
 Route::middleware(['auth', 'role:siswa'])->group(function () {

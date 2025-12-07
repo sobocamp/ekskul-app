@@ -89,9 +89,10 @@
                     <i class="align-middle" data-feather="home"></i> <span class="align-middle">Dashboard</span>
                 </a>
             </li>
-            <li class="sidebar-item {{ request()->routeIs('peserta.*') ? 'active' : '' }}">
-                <a class="sidebar-link" href="{{ route('peserta.index') }}">
-                    <i class="align-middle" data-feather="users"></i> <span class="align-middle">Daftar Peserta</span>
+            <li class="sidebar-item {{ request()->routeIs('extracurricular.*') ? 'active' : '' }}">
+                <a class="sidebar-link" href="{{ route('extracurricular.pembina', auth()->user()->id) }}">
+                    <i class="align-middle" data-feather="book-open"></i> <span class="align-middle">Ekstrakurikuler
+                        Saya</span>
                 </a>
             </li>
             {{--
