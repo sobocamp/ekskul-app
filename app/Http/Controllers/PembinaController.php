@@ -9,12 +9,18 @@ use App\Models\User;
 class PembinaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar seluruh pembina dengan pagination.
+     *
+     * Method ini mengambil semua data pengguna dengan role "pembina"
+     * menggunakan paginasi sebanyak 10 data per halaman, lalu mengirimkannya
+     * ke view untuk ditampilkan dalam tabel admin.
+     *
+     * @return \Illuminate\View\View  View halaman daftar pembina.
      */
     public function index()
     {
-        //
         $pembina = User::where('role', 'pembina')->paginate(10);
+
         return view('admin.pembina.index', [
             'title' => 'Pembina',
             'pembina' => $pembina
@@ -22,26 +28,39 @@ class PembinaController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan form untuk membuat pembina baru.
+     *
+     * Method ini hanya mengembalikan view form pembuatan pembina baru
+     * tanpa melakukan query tambahan ke database.
+     *
+     * @return \Illuminate\View\View  View halaman form tambah pembina.
      */
     public function create()
     {
-        //
         return view('admin.pembina.create', [
             'title' => 'Tambah Pembina'
         ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan data pembina baru ke dalam database.
+     *
+     * Method ini menerima data yang sudah tervalidasi melalui
+     * PembinaStoreRequest. Password di-hash menggunakan bcrypt sebelum
+     * disimpan. Data pembina baru akan dibuat sebagai user dengan role "pembina".
+     *
+     * @param  PembinaStoreRequest  $request  Request berisi input yang telah divalidasi.
+     * @return \Illuminate\Http\RedirectResponse  Redirect ke daftar pembina dengan pesan sukses.
      */
     public function store(PembinaStoreRequest $request)
     {
-        //
+        // Hash password sebelum disimpan
         $request->merge([
             'password' => bcrypt($request->password)
         ]);
+
         User::create($request->validated());
+
         return redirect()->route('pembina.index')->with('toast', [
             'type' => 'success',
             'message' => 'Pembina berhasil ditambahkan'
@@ -49,12 +68,18 @@ class PembinaController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Menampilkan detail pembina berdasarkan ID.
+     *
+     * Method ini akan mencari data pembina berdasarkan ID.
+     * Jika ditemukan, data dikirim ke view detail pembina.
+     *
+     * @param  string  $id  ID pembina yang akan ditampilkan.
+     * @return \Illuminate\View\View  View halaman detail pembina.
      */
     public function show(string $id)
     {
-        //
         $pembina = User::find($id);
+
         return view('admin.pembina.show', [
             'title' => 'Detail Pembina',
             'pembina' => $pembina
@@ -62,12 +87,18 @@ class PembinaController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan form untuk mengedit data pembina.
+     *
+     * Method ini mengambil data pembina berdasarkan ID dan mengirimkannya
+     * ke view form edit pembina.
+     *
+     * @param  string  $id  ID pembina yang akan diedit.
+     * @return \Illuminate\View\View  View halaman edit pembina.
      */
     public function edit(string $id)
     {
-        //
         $pembina = User::find($id);
+
         return view('admin.pembina.edit', [
             'title' => 'Edit Pembina',
             'pembina' => $pembina
@@ -75,19 +106,29 @@ class PembinaController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui data pembina di database.
+     *
+     * Method ini menerima input yang sudah tervalidasi melalui
+     * PembinaUpdateRequest. Password hanya akan diubah jika input password baru diisi.
+     * Jika password tidak diisi, field password tidak akan diubah (di-unset).
+     *
+     * @param  PembinaUpdateRequest  $request  Request berisi input yang telah divalidasi.
+     * @param  string                $id       ID pembina yang akan diperbarui.
+     * @return \Illuminate\Http\RedirectResponse  Redirect ke daftar pembina dengan pesan sukses.
      */
     public function update(PembinaUpdateRequest $request, string $id)
     {
-        //
         $data = $request->validated();
-        if($request->password) {
+
+        // Update password hanya jika diisi
+        if ($request->password) {
             $data['password'] = bcrypt($request->password);
-        }
-        else {
+        } else {
             unset($data['password']);
         }
+
         User::find($id)->update($data);
+
         return redirect()->route('pembina.index')->with('toast', [
             'type' => 'success',
             'message' => 'Pembina berhasil diperbarui'
@@ -95,15 +136,23 @@ class PembinaController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus pembina dari database.
+     *
+     * Method ini menghapus user berdasarkan ID. Tidak dilakukan pengecekan
+     * tambahan secara eksplisit karena diasumsikan ID sudah valid dan
+     * data pembina telah ditampilkan di halaman sebelumnya.
+     *
+     * @param  string  $id  ID pembina yang akan dihapus.
+     * @return \Illuminate\Http\RedirectResponse  Redirect ke daftar pembina dengan pesan sukses.
      */
     public function destroy(string $id)
     {
-        //
         User::find($id)->delete();
+
         return redirect()->route('pembina.index')->with('toast', [
             'type' => 'success',
             'message' => 'Pembina berhasil dihapus'
         ]);
     }
 }
+

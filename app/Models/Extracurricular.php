@@ -3,22 +3,70 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\User;
+use App\Models\ExtracurricularRegistration;
 
+/**
+ * Class Extracurricular
+ *
+ * Model ini mewakili entitas ekstrakurikuler di sistem.
+ *
+ * @property int $id
+ * @property string $name        Nama ekstrakurikuler
+ * @property string $description Deskripsi ekstrakurikuler
+ * @property int $quota          Kuota maksimum peserta
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection|ExtracurricularRegistration[] $registrations
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $pembina
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $participants
+ */
 class Extracurricular extends Model
 {
+    /**
+     * Kolom yang bisa diisi secara massal (mass assignable).
+     *
+     * @var array<int, string>
+     */
     protected $fillable = ['name', 'description', 'quota'];
 
-    public function registrations()
+    /**
+     * Relasi one-to-many ke tabel ekstrakurikuler_registrations.
+     *
+     * Setiap ekstrakurikuler bisa memiliki banyak pendaftaran peserta.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function registrations(): HasMany
     {
         return $this->hasMany(ExtracurricularRegistration::class);
     }
 
-    public function pembina()
+    /**
+     * Relasi many-to-many ke User sebagai pembina.
+     *
+     * Mengambil semua user dengan role 'pembina' yang terkait dengan ekstrakurikuler ini.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function pembina(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'extracurricular_user')->where('role', 'pembina');
+        return $this->belongsToMany(User::class, 'extracurricular_user')
+                    ->where('role', 'pembina');
     }
 
-    public function participants()
+    /**
+     * Relasi many-to-many ke User sebagai peserta.
+     *
+     * Mengambil semua peserta yang mendaftar ekstrakurikuler ini melalui pivot
+     * 'extracurricular_registrations', termasuk kolom pivot status dan registration_period_id.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function participants(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'extracurricular_registrations')
                     ->withPivot('status', 'registration_period_id')

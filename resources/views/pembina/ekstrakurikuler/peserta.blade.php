@@ -12,7 +12,7 @@
    <i class="fa fa-eye"></i> Lihat Ekstrakurikuler Saya
 </a> --}}
 <div class="mb-3">
-   <h1 class="h3 d-inline align-middle">{{ $title }}</h1>
+   <h1 class="h3 d-inline align-middle">{{ $title }}<b> {{ $extracurricular->name }} </b></h1>
 </div>
 
 <div class="row">
