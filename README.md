@@ -3,7 +3,7 @@ Aplikasi berbasis Laravel untuk mengelola kegiatan ekstrakurikuler dengan fitur 
 
 ---
 
-## 🎯 Fitur Utama
+## Fitur Utama
 | Role | Fitur |
 |------|-------|
 | **Admin** | CRUD ekstrakurikuler, menentukan kuota, periode registrasi, mengatur pembina, approval/reject pendaftaran |
@@ -12,7 +12,7 @@ Aplikasi berbasis Laravel untuk mengelola kegiatan ekstrakurikuler dengan fitur 
 
 ---
 
-## 🏗️ Teknologi
+## Teknologi
 - Laravel 11
 - Laravel UI (Bootstrap Auth)
 - MySQL / MariaDB
@@ -20,7 +20,7 @@ Aplikasi berbasis Laravel untuk mengelola kegiatan ekstrakurikuler dengan fitur 
 
 ---
 
-## ⚙️ Instalasi
+## Instalasi
 ```bash
 git clone https://github.com/sobocamp/ekskul-app.git
 cd ekstrakurikuler
