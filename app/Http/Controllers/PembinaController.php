@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Enums\ToastType;
+use App\Enums\ToastMessage;
+use App\Helpers\RedirectHelper;
 use App\Http\Requests\PembinaStoreRequest;
 use App\Http\Requests\PembinaUpdateRequest;
-use App\Models\User;
 
 class PembinaController extends Controller
 {
@@ -61,10 +64,12 @@ class PembinaController extends Controller
 
         User::create($request->validated());
 
-        return redirect()->route('pembina.index')->with('toast', [
-            'type' => 'success',
-            'message' => 'Pembina berhasil ditambahkan'
-        ]);
+        // Redirect dengan toast
+        return RedirectHelper::redirectWithToast(
+            redirect()->route('pembina.index'),
+            ToastType::SUCCESS,
+            ToastMessage::PEMBINA_CREATE_SUCCESS
+        );
     }
 
     /**
@@ -129,10 +134,12 @@ class PembinaController extends Controller
 
         User::find($id)->update($data);
 
-        return redirect()->route('pembina.index')->with('toast', [
-            'type' => 'success',
-            'message' => 'Pembina berhasil diperbarui'
-        ]);
+        // Redirect dengan toast
+        return RedirectHelper::redirectWithToast(
+            redirect()->route('pembina.index'),
+            ToastType::SUCCESS,
+            ToastMessage::PEMBINA_UPDATE_SUCCESS
+        );
     }
 
     /**
@@ -149,10 +156,11 @@ class PembinaController extends Controller
     {
         User::find($id)->delete();
 
-        return redirect()->route('pembina.index')->with('toast', [
-            'type' => 'success',
-            'message' => 'Pembina berhasil dihapus'
-        ]);
+        // Redirect dengan toast
+        return RedirectHelper::redirectWithToast(
+            redirect()->route('pembina.index'),
+            ToastType::SUCCESS,
+            ToastMessage::PEMBINA_DELETE_SUCCESS
+        );
     }
 }
-

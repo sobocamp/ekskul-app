@@ -41,7 +41,18 @@
                                 <span class="badge bg-primary">{{ $pb->name }}</span>
                                 @endforeach
                             </td>
-                            <td>{{ $ekstra->quota }}</td>
+                            <td>
+                                @php
+                                $terisi = $ekstra->approvedParticipants->count();
+                                $kuota = $ekstra->quota;
+                                @endphp
+
+                                @if ($terisi >= $kuota)
+                                <span class="badge bg-danger">{{ $terisi }} / {{ $kuota }} (Penuh)</span>
+                                @else
+                                <span class="badge bg-primary">{{ $terisi }} / {{ $kuota }}</span>
+                                @endif
+                            </td>
                             <td class="text-nowrap">
                                 {{-- View --}}
                                 <a data-bs-toggle="tooltip" data-bs-placement="top" class="btn btn-sm btn-primary"
