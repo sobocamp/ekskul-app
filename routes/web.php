@@ -34,6 +34,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'role:pembina'])->group(function () {
     Route::get('pembina/extracurricular/{id}', [EkstrakurikulerController::class, 'ekstrakurikulerPembina'])->name('extracurricular.pembina');
     Route::get('pembina/extracurricular/{id}/peserta', [EkstrakurikulerController::class, 'peserta'])->name('extracurricular.peserta');
+    Route::get('pembina/extracurricular/{id}/approve/{user_id}', [EkstrakurikulerController::class, 'approve'])->name('extracurricular.approve');
+    Route::get('pembina/extracurricular/{id}/pending/{user_id}', [EkstrakurikulerController::class, 'pending'])->name('extracurricular.pending');
+    Route::get('pembina/extracurricular/{id}/reject/{user_id}', [EkstrakurikulerController::class, 'reject'])->name('extracurricular.reject');
 });
 
 Route::middleware(['auth', 'role:siswa'])->group(function () {

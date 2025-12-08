@@ -26,7 +26,7 @@
                             <th>Nama</th>
                             <th>Deskripsi</th>
                             {{-- <th>Pembina</th> --}}
-                            <th width="100px;">Peserta</th>
+                            <th width="150px;">Kuota</th>
                             <th width="60px;">Aksi</th>
                         </tr>
                     </thead>
@@ -34,14 +34,14 @@
                         @foreach ($extracurriculars as $ekstra)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $ekstra->name }}</td>
+                            <td class="text-nowrap">{{ $ekstra->name }}</td>
                             <td>{{ $ekstra->description }}</td>
                             {{-- <td>
                                 @foreach($ekstra->pembina as $pb)
                                 <span class="badge bg-primary">{{ $pb->name }}</span>
                                 @endforeach
                             </td> --}}
-                            <td>{{ $ekstra->participants->count() }}</td>
+                            <td>{{ $ekstra->approvedParticipants->count() }} / {{ $ekstra->quota }}</td>
                             <td class="text-nowrap">
                                 {{-- View --}}
                                 <a data-bs-toggle="tooltip" data-bs-placement="top" class="btn btn-sm btn-primary"

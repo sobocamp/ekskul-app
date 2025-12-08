@@ -79,11 +79,19 @@
                     <button type="submit" class="btn btn-danger">Batalkan Pendaftaran</button>
                 </form>
                 @else
+                @if ($extracurricular->approvedParticipants->count() >= $extracurricular->quota)
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <div class="alert-message">
+                        Kuota untuk ekstrakurikuler ini sudah penuh
+                    </div>
+                </div>
+                @else
                 <form action="{{ route('extracurricular.register', $extracurricular->id) }}" method="post"
                     onsubmit="return confirm('Anda yakin ingin mendaftar ekstrakurikuler ini?');">
                     @csrf
                     <button type="submit" class="btn btn-primary">Daftar Sekarang</button>
                 </form>
+                @endif
                 @endif
 
             </div>

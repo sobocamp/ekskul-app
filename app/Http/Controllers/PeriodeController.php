@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ToastType;
+use App\Enums\ToastMessage;
+use App\Helpers\RedirectHelper;
 use App\Models\RegistrationPeriod;
 use App\Http\Requests\PeriodeRequest;
 
@@ -61,10 +64,12 @@ class PeriodeController extends Controller
 
         RegistrationPeriod::create($request->validated());
 
-        return redirect()->route('periode.index')->with('toast', [
-            'type' => 'success',
-            'message' => 'Periode pendaftaran berhasil ditambahkan'
-        ]);
+        // Redirect dengan toast
+        return RedirectHelper::redirectWithToast(
+            redirect()->route('periode.index'),
+            ToastType::SUCCESS,
+            ToastMessage::PERIOD_CREATE_SUCCESS
+        );
     }
 
     /**
@@ -127,10 +132,12 @@ class PeriodeController extends Controller
         $periode = RegistrationPeriod::find($id);
         $periode->update($request->validated());
 
-        return redirect()->route('periode.index')->with('toast', [
-            'type' => 'success',
-            'message' => 'Periode pendaftaran berhasil diperbarui'
-        ]);
+        // Redirect dengan toast
+        return RedirectHelper::redirectWithToast(
+            redirect()->route('periode.index'),
+            ToastType::SUCCESS,
+            ToastMessage::PERIOD_UPDATE_SUCCESS
+        );
     }
 
     /**
@@ -147,10 +154,11 @@ class PeriodeController extends Controller
     {
         RegistrationPeriod::find($id)->delete();
 
-        return redirect()->route('periode.index')->with('toast', [
-            'type' => 'success',
-            'message' => 'Periode pendaftaran berhasil dihapus'
-        ]);
+        // Redirect dengan toast
+        return RedirectHelper::redirectWithToast(
+            redirect()->route('periode.index'),
+            ToastType::SUCCESS,
+            ToastMessage::PERIOD_DELETE_SUCCESS
+        );
     }
 }
-
