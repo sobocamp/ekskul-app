@@ -8,8 +8,9 @@ use App\Enums\ToastMessage;
 use App\Helpers\RedirectHelper;
 use App\Models\Extracurricular;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\EkstrakurikulerRequest;
 use App\Traits\ExtracurricularHelper;
+use App\Factories\ParticipantStatusFactory;
+use App\Http\Requests\EkstrakurikulerRequest;
 
 class EkstrakurikulerController extends Controller
 {
@@ -394,6 +395,56 @@ class EkstrakurikulerController extends Controller
     }
 
     /**
+     * Mengupdate status pendaftaran siswa pada ekstrakurikuler.
+     *
+     * Validasi yang dilakukan:
+     * - Periode registrasi harus aktif
+     * - Siswa harus sudah mendaftar sebelumnya
+     *
+     * Jika lolos validasi, status pendaftaran di tabel pivot akan diubah menjadi 'approved'.
+     *
+     * @param  string  $id  ID ekstrakurikuler.
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function updateStatus(string $id, string $userId, string $status, ToastMessage $successMessage)
+    {
+        ParticipantStatusFactory::validate($status);
+
+        $extracurricular = Extracurricular::findOrFail($id);
+        $user = User::findOrFail($userId);
+
+        // periode aktif
+        $period = $this->getActivePeriodOrFail();
+        if (!$period) {
+            return RedirectHelper::backWithToast(
+                back(),
+                ToastType::ERROR,
+                ToastMessage::EXTRACURRICULAR_PERIOD_NOT_ACTIVE
+            );
+        }
+
+        // cek apakah user pernah daftar
+        $joined = $this->checkAlreadyJoined($extracurricular, $user->id, $period->id);
+        if (!$joined) {
+            return RedirectHelper::backWithToast(
+                back(),
+                ToastType::ERROR,
+                ToastMessage::EXTRACURRICULAR_NO_DATA_AVAILABLE
+            );
+        }
+
+        // update status
+        $extracurricular->participants()
+            ->updateExistingPivot($user->id, ['status' => $status]);
+
+        return RedirectHelper::redirectWithToast(
+            redirect()->route('extracurricular.peserta', $extracurricular->id),
+            ToastType::SUCCESS,
+            $successMessage
+        );
+    }
+
+    /**
      * Menyetujui pendaftaran siswa pada ekstrakurikuler.
      *
      * Validasi yang dilakukan:
@@ -405,82 +456,34 @@ class EkstrakurikulerController extends Controller
      * @param  string  $id  ID ekstrakurikuler.
      * @return \Illuminate\Http\RedirectResponse
      */
-
     public function approve(string $id, string $user_id)
     {
-        $extracurricular = Extracurricular::find($id);
-        $user = User::find($user_id);
-
-        // Ambil periode aktif
-        $period = $this->getActivePeriodOrFail();
-
-        if (!$period) {
-            // Redirect dengan toast
-            return RedirectHelper::backWithToast(
-                back(),
-                ToastType::ERROR,
-                ToastMessage::EXTRACURRICULAR_PERIOD_NOT_ACTIVE
-            );
-        }
-
-        // Cek apakah sudah mendaftar
-        $alreadyJoined = $this->checkAlreadyJoined($extracurricular, $user->id, $period->id);
-
-        if (!$alreadyJoined) {
-            // Redirect dengan toast
-            return RedirectHelper::backWithToast(
-                back(),
-                ToastType::ERROR,
-                ToastMessage::EXTRACURRICULAR_NO_DATA_AVAILABLE
-            );
-        }
-
-        // Update status menjadi approved
-        $this->updateParticipantStatus($extracurricular, $user->id, 'approved');
-
-        // Redirect dengan toast
-        return RedirectHelper::redirectWithToast(
-            redirect()->route('extracurricular.peserta', $extracurricular->id),
-            ToastType::SUCCESS,
+        return $this->updateStatus(
+            $id,
+            $user_id,
+            'approved',
             ToastMessage::EXTRACURRICULAR_APPROVE_SUCCESS
         );
     }
+
+    /**
+     * Menunda pendaftaran siswa pada ekstrakurikuler.
+     *
+     * Validasi yang dilakukan:
+     * - Periode registrasi harus aktif
+     * - Siswa harus sudah mendaftar sebelumnya
+     *
+     * Jika lolos validasi, status pendaftaran di tabel pivot akan diubah menjadi 'pending'.
+     *
+     * @param  string  $id  ID ekstrakurikuler.
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function pending(string $id, string $user_id)
     {
-        $extracurricular = Extracurricular::find($id);
-        $user = User::find($user_id);
-
-        // Ambil periode aktif
-        $period = $this->getActivePeriodOrFail();
-
-        if (!$period) {
-            // Redirect dengan toast
-            return RedirectHelper::backWithToast(
-                back(),
-                ToastType::ERROR,
-                ToastMessage::EXTRACURRICULAR_PERIOD_NOT_ACTIVE
-            );
-        }
-
-        // Cek apakah sudah mendaftar
-        $alreadyJoined = $this->checkAlreadyJoined($extracurricular, $user->id, $period->id);
-
-        if (!$alreadyJoined) {
-            // Redirect dengan toast
-            return RedirectHelper::backWithToast(
-                back(),
-                ToastType::ERROR,
-                ToastMessage::EXTRACURRICULAR_NO_DATA_AVAILABLE
-            );
-        }
-
-        // Update status menjadi pending
-        $this->updateParticipantStatus($extracurricular, $user->id, 'pending');
-
-        // Redirect dengan toast
-        return RedirectHelper::redirectWithToast(
-            redirect()->route('extracurricular.peserta', $extracurricular->id),
-            ToastType::SUCCESS,
+        return $this->updateStatus(
+            $id,
+            $user_id,
+            'pending',
             ToastMessage::EXTRACURRICULAR_PENDING_SUCCESS
         );
     }
@@ -499,40 +502,10 @@ class EkstrakurikulerController extends Controller
      */
     public function reject(string $id, string $user_id)
     {
-        $extracurricular = Extracurricular::find($id);
-        $user = User::find($user_id);
-
-        // Ambil periode aktif
-        $period = $this->getActivePeriodOrFail();
-
-        if (!$period) {
-            // Redirect dengan toast
-            return RedirectHelper::backWithToast(
-                back(),
-                ToastType::ERROR,
-                ToastMessage::EXTRACURRICULAR_PERIOD_NOT_ACTIVE
-            );
-        }
-
-        // Cek apakah sudah mendaftar
-        $alreadyJoined = $this->checkAlreadyJoined($extracurricular, $user->id, $period->id);
-
-        if (!$alreadyJoined) {
-            // Redirect dengan toast
-            return RedirectHelper::backWithToast(
-                back(),
-                ToastType::ERROR,
-                ToastMessage::EXTRACURRICULAR_NO_DATA_AVAILABLE
-            );
-        }
-
-        // Update status menjadi rejected
-        $this->updateParticipantStatus($extracurricular, $user->id, 'rejected');
-
-        // Redirect dengan toast
-        return RedirectHelper::redirectWithToast(
-            redirect()->route('extracurricular.peserta', $extracurricular->id),
-            ToastType::SUCCESS,
+        return $this->updateStatus(
+            $id,
+            $user_id,
+            'rejected',
             ToastMessage::EXTRACURRICULAR_REJECT_SUCCESS
         );
     }
