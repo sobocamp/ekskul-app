@@ -46,7 +46,7 @@ class PeriodeController extends Controller
      *
      * Logika validasi tambahan:
      * - Jika field "is_active" dicentang, maka seluruh periode aktif lain
-     *   akan dinonaktifkan terlebih dahulu (set is_active = false).
+     *   akan dinonaktifkan terlebih dahulu (set is_active = 0).
      *
      * Data utama kemudian disimpan melalui model RegistrationPeriod.
      *
@@ -57,18 +57,13 @@ class PeriodeController extends Controller
     {
         // Jika membuat periode aktif baru, nonaktifkan periode aktif sebelumnya
         if ($request->is_active) {
-            RegistrationPeriod::where('is_active', true)->update(['is_active' => false]);
+            RegistrationPeriod::where('is_active', 1)->update(['is_active' => 0]);
         }
 
         RegistrationPeriod::create($request->validated());
 
         // Redirect dengan toast
         return RedirectWithToast::PERIOD_CREATE_SUCCESS->redirect('periode.index');
-        // return RedirectHelper::redirectWithToast(
-        //     redirect()->route('periode.index'),
-        //     ToastType::SUCCESS,
-        //     ToastMessage::PERIOD_CREATE_SUCCESS
-        // );
     }
 
     /**
@@ -113,7 +108,7 @@ class PeriodeController extends Controller
      * Memperbarui periode pendaftaran pada database.
      *
      * Logika:
-     * - Jika "is_active" diset menjadi true, seluruh periode aktif lainnya
+     * - Jika "is_active" diset menjadi 1, seluruh periode aktif lainnya
      *   akan dinonaktifkan terlebih dahulu.
      * - Data akan diperbarui berdasarkan validasi dari PeriodeRequest.
      *
@@ -125,7 +120,7 @@ class PeriodeController extends Controller
     {
         // Jika menyetel periode ini sebagai aktif, maka nonaktifkan semua periode aktif lainnya
         if ($request->is_active) {
-            RegistrationPeriod::where('is_active', true)->update(['is_active' => false]);
+            RegistrationPeriod::where('is_active', 1)->update(['is_active' => 0]);
         }
 
         $periode = RegistrationPeriod::find($id);
