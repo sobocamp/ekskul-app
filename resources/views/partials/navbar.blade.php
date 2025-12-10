@@ -3,7 +3,7 @@
         <i class="hamburger align-self-center"></i>
     </a>
 
-    <form class="d-none d-sm-inline-block">
+    <form class="d-none d-sm-inline-block me-4">
         <div class="input-group input-group-navbar">
             <input type="text" class="form-control" placeholder="Search…" aria-label="Search">
             <button class="btn" type="button">
@@ -12,6 +12,18 @@
         </div>
     </form>
 
+    @if ($periodeAktif)
+    <div class="rounded px-3 py-2 d-flex align-items-center">
+        <i class="align-middle me-2" data-feather="calendar"></i>
+        <span class="fw-bold me-2">Periode:</span>
+        <span class="badge bg-success px-3 py-2">{{ $periodeAktif->name }}</span>
+    </div>
+    @else
+    <div class="rounded px-3 py-2 d-flex align-items-center">
+        <i class="align-middle me-2" data-feather="alert-circle"></i>
+        <span class="badge bg-danger px-3 py-2">Tidak ada periode aktif</span>
+    </div>
+    @endif
 
     <div class="navbar-collapse collapse">
         <ul class="navbar-nav navbar-align">
@@ -113,8 +125,8 @@
                         <a href="#" class="list-group-item">
                             <div class="row g-0 align-items-center">
                                 <div class="col-2">
-                                    <img src={{ asset('img/avatars/avatar-2.jpg') }} class="avatar img-fluid rounded-circle"
-                                        alt="William Harris">
+                                    <img src={{ asset('img/avatars/avatar-2.jpg') }}
+                                        class="avatar img-fluid rounded-circle" alt="William Harris">
                                 </div>
                                 <div class="col-10 ps-2">
                                     <div class="text-dark">William Harris</div>
@@ -127,8 +139,8 @@
                         <a href="#" class="list-group-item">
                             <div class="row g-0 align-items-center">
                                 <div class="col-2">
-                                    <img src={{ asset('img/avatars/avatar-4.jpg') }} class="avatar img-fluid rounded-circle"
-                                        alt="Christina Mason">
+                                    <img src={{ asset('img/avatars/avatar-4.jpg') }}
+                                        class="avatar img-fluid rounded-circle" alt="Christina Mason">
                                 </div>
                                 <div class="col-10 ps-2">
                                     <div class="text-dark">Christina Mason</div>
@@ -141,8 +153,8 @@
                         <a href="#" class="list-group-item">
                             <div class="row g-0 align-items-center">
                                 <div class="col-2">
-                                    <img src={{ asset('img/avatars/avatar-3.jpg') }} class="avatar img-fluid rounded-circle"
-                                        alt="Sharon Lessman">
+                                    <img src={{ asset('img/avatars/avatar-3.jpg') }}
+                                        class="avatar img-fluid rounded-circle" alt="Sharon Lessman">
                                 </div>
                                 <div class="col-10 ps-2">
                                     <div class="text-dark">Sharon Lessman</div>

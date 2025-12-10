@@ -3,11 +3,12 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PembinaController;
+use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\EkstrakurikulerController;
-use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EkstrakurikulerController;
+use App\Http\Controllers\TesKompleksitasController;
 
 Route::get('/', function () {
     return Auth::check()
@@ -45,5 +46,8 @@ Route::middleware(['auth', 'role:siswa'])->group(function () {
     Route::post('siswa/extracurricular/{id}/unregister', [EkstrakurikulerController::class, 'unregister'])->name('extracurricular.unregister');
     Route::get('siswa/extracurricular', [EkstrakurikulerController::class, 'ekstrakurikulerSemua'])->name('extracurricular');
 });
+
+Route::get('tes-kompleksitas', [TesKompleksitasController::class, 'analyze'])->name('tes-kompleksitas');
+Route::get('tes-kompleksitas/multiple', [TesKompleksitasController::class, 'analyzeMultiple'])->name('tes-kompleksitas.multiple');
 
 require __DIR__.'/auth.php';
