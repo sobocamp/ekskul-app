@@ -219,6 +219,8 @@ class EkstrakurikulerController extends Controller
     {
         $extracurriculars = Extracurricular::whereHas('registrations', function ($query) use ($id) {
             $query->where('user_id', $id);
+        })->whereHas('registrations.registrationPeriod', function ($query) {
+            $query->where('is_active', true);
         })->paginate(10);
 
         return $this->render('siswa.ekstrakurikuler.index', [

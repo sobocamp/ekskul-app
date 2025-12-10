@@ -1,73 +1,49 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ $title ?? 'Mobile App' }} - AdminKit</title>
-    <link href="/assets/css/app.css" rel="stylesheet"> <!-- AdminKit -->
-    <script src="/assets/js/app.js"></script>
-    <style>
-        body {
-            background-color: #f5f7fb;
-            padding-bottom: 70px; /* space for bottom nav */
-        }
-        .mobile-container {
-            max-width: 480px;
-            margin: auto;
-            background: #fff;
-            min-height: 100vh;
-        }
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            background: #fff;
-            border-top: 1px solid #ddd;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 999;
-        }
-        .bottom-nav a {
-            text-align: center;
-            flex: 1;
-            color: #6c757d;
-        }
-        .bottom-nav a.active {
-            color: #007bff;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
+{{-- <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
 
-<div class="mobile-container">
-    <header class="navbar navbar-light bg-white px-3 py-2 border-bottom">
-        <h5 class="m-0 fw-bold">{{ $title ?? 'Mobile Page' }}</h5>
-    </header>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    {{ __("You're logged in!") }}
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout> --}}
+@extends('layouts.template')
 
-    <main class="p-3">
-        @yield('content')
-    </main>
+@section('title', 'Dashboard Siswa')
+
+@section('content')
+<div class="row mb-2 mb-xl-3">
+    <div class="col-auto d-none d-sm-block">
+        <h3>Dashboard Siswa</h3>
+    </div>
+
+    {{-- <div class="col-auto ms-auto text-end mt-n1">
+        <a href="#" class="btn btn-light bg-white me-2">Invite a Friend</a>
+        <a href="#" class="btn btn-primary">New Project</a>
+    </div> --}}
+</div>
+<div class="row">
+    <div class="col-xl-12 col-xxl-12 d-flex">
+        <div class="w-100">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Selamat datang, {{ Auth::user()->name }}!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="bottom-nav">
-    <a href="/home" class="{{ request()->is('home') ? 'active' : '' }}">
-        <i data-feather="home"></i><br>Home
-    </a>
-    <a href="/activity" class="{{ request()->is('activity') ? 'active' : '' }}">
-        <i data-feather="grid"></i><br>Activity
-    </a>
-    <a href="/profile" class="{{ request()->is('profile') ? 'active' : '' }}">
-        <i data-feather="user"></i><br>Profile
-    </a>
-</div>
-
-<script>
-    feather.replace();
-</script>
-</body>
-</html>
+@endsection
