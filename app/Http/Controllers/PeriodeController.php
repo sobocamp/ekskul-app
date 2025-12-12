@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ToastType;
-use App\Enums\ToastMessage;
-use App\Helpers\RedirectHelper;
+use App\Enums\RedirectWithToast;
 use App\Models\RegistrationPeriod;
 use App\Http\Requests\PeriodeRequest;
 
@@ -23,7 +21,7 @@ class PeriodeController extends Controller
     {
         $periode = RegistrationPeriod::paginate(10);
 
-        return view('admin.periode.index', [
+        return $this->render('admin.periode.index', [
             'title' => 'Periode Pendaftaran',
             'periode' => $periode
         ]);
@@ -38,7 +36,7 @@ class PeriodeController extends Controller
      */
     public function create()
     {
-        return view('admin.periode.create', [
+        return $this->render('admin.periode.create', [
             'title' => 'Tambah Periode Pendaftaran'
         ]);
     }
@@ -48,7 +46,7 @@ class PeriodeController extends Controller
      *
      * Logika validasi tambahan:
      * - Jika field "is_active" dicentang, maka seluruh periode aktif lain
-     *   akan dinonaktifkan terlebih dahulu (set is_active = false).
+     *   akan dinonaktifkan terlebih dahulu (set is_active = 0).
      *
      * Data utama kemudian disimpan melalui model RegistrationPeriod.
      *
@@ -59,17 +57,13 @@ class PeriodeController extends Controller
     {
         // Jika membuat periode aktif baru, nonaktifkan periode aktif sebelumnya
         if ($request->is_active) {
-            RegistrationPeriod::where('is_active', true)->update(['is_active' => false]);
+            RegistrationPeriod::where('is_active', 1)->update(['is_active' => 0]);
         }
 
         RegistrationPeriod::create($request->validated());
 
         // Redirect dengan toast
-        return RedirectHelper::redirectWithToast(
-            redirect()->route('periode.index'),
-            ToastType::SUCCESS,
-            ToastMessage::PERIOD_CREATE_SUCCESS
-        );
+        return RedirectWithToast::PERIOD_CREATE_SUCCESS->redirect('periode.index');
     }
 
     /**
@@ -85,7 +79,7 @@ class PeriodeController extends Controller
     {
         $periode = RegistrationPeriod::find($id);
 
-        return view('admin.periode.show', [
+        return $this->render('admin.periode.show', [
             'title' => 'Detail Periode Pendaftaran',
             'periode' => $periode
         ]);
@@ -104,7 +98,7 @@ class PeriodeController extends Controller
     {
         $periode = RegistrationPeriod::find($id);
 
-        return view('admin.periode.edit', [
+        return $this->render('admin.periode.edit', [
             'title' => 'Edit Periode Pendaftaran',
             'periode' => $periode
         ]);
@@ -114,7 +108,7 @@ class PeriodeController extends Controller
      * Memperbarui periode pendaftaran pada database.
      *
      * Logika:
-     * - Jika "is_active" diset menjadi true, seluruh periode aktif lainnya
+     * - Jika "is_active" diset menjadi 1, seluruh periode aktif lainnya
      *   akan dinonaktifkan terlebih dahulu.
      * - Data akan diperbarui berdasarkan validasi dari PeriodeRequest.
      *
@@ -126,18 +120,14 @@ class PeriodeController extends Controller
     {
         // Jika menyetel periode ini sebagai aktif, maka nonaktifkan semua periode aktif lainnya
         if ($request->is_active) {
-            RegistrationPeriod::where('is_active', true)->update(['is_active' => false]);
+            RegistrationPeriod::where('is_active', 1)->update(['is_active' => 0]);
         }
 
         $periode = RegistrationPeriod::find($id);
         $periode->update($request->validated());
 
         // Redirect dengan toast
-        return RedirectHelper::redirectWithToast(
-            redirect()->route('periode.index'),
-            ToastType::SUCCESS,
-            ToastMessage::PERIOD_UPDATE_SUCCESS
-        );
+        return RedirectWithToast::PERIOD_UPDATE_SUCCESS->redirect('periode.index');
     }
 
     /**
@@ -155,10 +145,6 @@ class PeriodeController extends Controller
         RegistrationPeriod::find($id)->delete();
 
         // Redirect dengan toast
-        return RedirectHelper::redirectWithToast(
-            redirect()->route('periode.index'),
-            ToastType::SUCCESS,
-            ToastMessage::PERIOD_DELETE_SUCCESS
-        );
+        return RedirectWithToast::PERIOD_DELETE_SUCCESS->redirect('periode.index');
     }
 }

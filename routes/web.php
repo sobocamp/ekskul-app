@@ -3,10 +3,12 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PembinaController;
+use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EkstrakurikulerController;
-use App\Http\Controllers\PeriodeController;
+use App\Http\Controllers\TesKompleksitasController;
 
 Route::get('/', function () {
     return Auth::check()
@@ -14,9 +16,7 @@ Route::get('/', function () {
         : redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -46,5 +46,8 @@ Route::middleware(['auth', 'role:siswa'])->group(function () {
     Route::post('siswa/extracurricular/{id}/unregister', [EkstrakurikulerController::class, 'unregister'])->name('extracurricular.unregister');
     Route::get('siswa/extracurricular', [EkstrakurikulerController::class, 'ekstrakurikulerSemua'])->name('extracurricular');
 });
+
+Route::get('tes-kompleksitas', [TesKompleksitasController::class, 'analyze'])->name('tes-kompleksitas');
+Route::get('tes-kompleksitas/multiple', [TesKompleksitasController::class, 'analyzeMultiple'])->name('tes-kompleksitas.multiple');
 
 require __DIR__.'/auth.php';
