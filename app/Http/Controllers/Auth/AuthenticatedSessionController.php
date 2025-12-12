@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -28,6 +29,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        Log::channel('custom')->info('User logged in', [
+            'user' => $request->user(),
+            'ip_address' => $request->ip(),
+        ]);
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
@@ -41,6 +47,11 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        Log::channel('custom')->info('User logged out', [
+            'user' => $request->user(),
+            'ip_address' => $request->ip(),
+        ]);
 
         return redirect('/');
     }
