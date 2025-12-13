@@ -9,6 +9,7 @@ use App\Models\Extracurricular;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\ParticipantStatus;
 use App\Http\Requests\EkstrakurikulerRequest;
+use Illuminate\Support\Facades\Log;
 
 class EkstrakurikulerController extends Controller
 {
@@ -26,6 +27,11 @@ class EkstrakurikulerController extends Controller
     public function index()
     {
         $extracurriculars = Extracurricular::paginate(10);
+
+        Log::channel('custom')->info('User melihat daftar ekstrakurikuler', [
+            'user' => Auth::user(),
+            'ip_address' => request()->ip(),
+        ]);
 
         return $this->render('admin.ekstrakurikuler.index', [
             'title' => 'Ekstrakurikuler',
@@ -65,6 +71,12 @@ class EkstrakurikulerController extends Controller
     {
         $extracurricular = Extracurricular::create($request->validated());
         $extracurricular->pembina()->sync($request->pembina_id);
+
+        Log::channel('custom')->info('User menambahkan ekstrakurikuler', [
+            'user' => Auth::user(),
+            'ip_address' => request()->ip(),
+            'extracurricular' => $extracurricular
+        ]);
 
         // Redirect dengan toast
         return RedirectWithToast::EXTRACURRICULAR_CREATE_SUCCESS->redirect('extracurricular.index');
@@ -135,6 +147,12 @@ class EkstrakurikulerController extends Controller
         $extracurricular->update($request->validated());
         $extracurricular->pembina()->sync($request->pembina_id);
 
+        Log::channel('custom')->info('User mengubah ekstrakurikuler', [
+            'user' => Auth::user(),
+            'ip_address' => request()->ip(),
+            'extracurricular' => $extracurricular
+        ]);
+
         // Redirect dengan toast
         return RedirectWithToast::EXTRACURRICULAR_UPDATE_SUCCESS->redirect('extracurricular.index');
     }
@@ -157,6 +175,12 @@ class EkstrakurikulerController extends Controller
 
         // Hapus data utama
         $extracurricular->delete();
+
+        Log::channel('custom')->info('User menghapus ekstrakurikuler', [
+            'user' => Auth::user(),
+            'ip_address' => request()->ip(),
+            'extracurricular' => $extracurricular
+        ]);
 
         // Redirect dengan toast
         return RedirectWithToast::EXTRACURRICULAR_DELETE_SUCCESS->redirect('extracurricular.index');
@@ -300,6 +324,12 @@ class EkstrakurikulerController extends Controller
             'updated_at' => now(),
         ]);
 
+        Log::channel('custom')->info('User mendaftar ekstrakurikuler', [
+            'user' => Auth::user(),
+            'ip_address' => request()->ip(),
+            'extracurricular' => $extracurricular
+        ]);
+
         // Redirect dengan toast
         return RedirectWithToast::EXTRACURRICULAR_REGISTRATION_SUCCESS->redirect('extracurricular.detail', [$extracurricular->id]);
     }
@@ -339,6 +369,12 @@ class EkstrakurikulerController extends Controller
 
         // Hapus dari pivot
         $extracurricular->participants()->detach($user->id);
+
+        Log::channel('custom')->info('User membatalkan pendaftaran ekstrakurikuler', [
+            'user' => Auth::user(),
+            'ip_address' => request()->ip(),
+            'extracurricular' => $extracurricular
+        ]);
 
         // Redirect dengan toast
         return RedirectWithToast::EXTRACURRICULAR_UNREGISTER_SUCCESS->redirect('extracurricular.detail', [$extracurricular->id]);
@@ -395,6 +431,13 @@ class EkstrakurikulerController extends Controller
         // update status
         $status->execute($extracurricular, $user->id);
 
+        Log::channel('custom')->info('User mengubah status pendaftaran ekstrakurikuler', [
+            'user' => Auth::user(),
+            'ip_address' => request()->ip(),
+            'extracurricular' => $extracurricular,
+            'status' => $status->value
+        ]);
+
         return $status->successMessage()->redirect('extracurricular.peserta', [$extracurricular->id]);
     }
 
@@ -412,6 +455,13 @@ class EkstrakurikulerController extends Controller
      */
     public function approve(string $id, string $user_id)
     {
+        Log::channel('custom')->info('User menyetujui pendaftaran ekstrakurikuler', [
+            'pembina' => Auth::user()->name,
+            'ip_address' => request()->ip(),
+            'extracurricular_id' => $id,
+            'siswa' => User::findOrFail($user_id)->name
+        ]);
+
         return $this->updateStatus(
             $id,
             $user_id,
@@ -433,6 +483,13 @@ class EkstrakurikulerController extends Controller
      */
     public function pending(string $id, string $user_id)
     {
+        Log::channel('custom')->info('User menunda pendaftaran ekstrakurikuler', [
+            'pembina' => Auth::user()->name,
+            'ip_address' => request()->ip(),
+            'extracurricular' => $id,
+            'siswa' => User::findOrFail($user_id)->name
+        ]);
+
         return $this->updateStatus(
             $id,
             $user_id,
@@ -454,6 +511,13 @@ class EkstrakurikulerController extends Controller
      */
     public function reject(string $id, string $user_id)
     {
+        Log::channel('custom')->info('User menolak pendaftaran ekstrakurikuler', [
+            'pembina' => Auth::user()->name,
+            'ip_address' => request()->ip(),
+            'extracurricular' => $id,
+            'siswa' => User::findOrFail($user_id)->name
+        ]);
+
         return $this->updateStatus(
             $id,
             $user_id,
