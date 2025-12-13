@@ -13,7 +13,7 @@ Aplikasi berbasis Laravel untuk mengelola kegiatan ekstrakurikuler dengan fitur 
 ---
 
 ## Teknologi
-- Laravel 11
+- Laravel 12
 - Laravel UI (Bootstrap Auth)
 - MySQL / MariaDB
 - Blade Templates
