@@ -32,8 +32,8 @@ class TesKompleksitasController extends Controller
         return view('tes-kompleksitas', [
             'input_n' => $n,
             'result' => $sum,
-            'time_ms' => round(($endTime - $startTime) * 1000, 3),
-            'memory_kb' => round(($endMemory - $startMemory) / 1024, 3),
+            'time_ms' => round(($endTime - $startTime) * 1000, 10),
+            'memory_kb' => round(($endMemory - $startMemory) / 1024, 10),
             'estimated_complexity' => 'O(n)', // informasi statis untuk edukasi
         ]);
     }
@@ -59,8 +59,8 @@ class TesKompleksitasController extends Controller
         $func();
 
         return [
-            'time_ms' => round((microtime(true) - $startTime) * 1000, 3),
-            'memory_kb' => round((memory_get_usage(false) - $startMemory) / 1024, 3),
+            'time_ms' => round((microtime(true) - $startTime) * 1000, 10),
+            'memory_kb' => round((memory_get_usage(false) - $startMemory) / 1024, 10),
         ];
     }
 
