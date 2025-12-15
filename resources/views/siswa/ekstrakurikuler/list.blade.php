@@ -18,6 +18,20 @@
 <div class="row">
     <div class="col-12 col-xl-12">
         <div class="card">
+            <div class="card-header">
+                <form action="{{ route('extracurricular') }}" method="GET">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" name="search" id="search" value="{{ request('search') }}"
+                                class="form-control" placeholder="Cari ekstrakurikuler...">
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary">Cari</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-striped mb-0">
                     <thead>

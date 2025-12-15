@@ -24,11 +24,6 @@
     <div class="col-auto d-none d-sm-block">
         <h3>Dashboard Administrator</h3>
     </div>
-
-    {{-- <div class="col-auto ms-auto text-end mt-n1">
-        <a href="#" class="btn btn-light bg-white me-2">Invite a Friend</a>
-        <a href="#" class="btn btn-primary">New Project</a>
-    </div> --}}
 </div>
 <div class="row">
     <div class="col-xl-12 col-xxl-12 d-flex">
@@ -40,6 +35,71 @@
                             <p>Selamat datang, {{ Auth::user()->name }}!</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col mt-0">
+                        <h5 class="card-title">Ekstrakurikuler</h5>
+                    </div>
+
+                    <div class="col-auto">
+                        <div class="stat text-white bg-primary">
+                            <i class="align-middle" data-feather="book-open"></i>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="mt-1 mb-3">{{ $extracurriculars }}</h1>
+                <div class="mb-0">
+                    <a href="{{ url('admin/extracurricular') }}">Lihat Data</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col mt-0">
+                        <h5 class="card-title">Pembina</h5>
+                    </div>
+
+                    <div class="col-auto">
+                        <div class="stat text-white bg-danger">
+                            <i class="align-middle" data-feather="user"></i>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="mt-1 mb-3">{{ $pembina }}</h1>
+                <div class="mb-0">
+                    <a href="{{ url('admin/pembina') }}">Lihat Data</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col mt-0">
+                        <h5 class="card-title">Periode Pendaftaran</h5>
+                    </div>
+
+                    <div class="col-auto">
+                        <div class="stat text-white bg-info">
+                            <i class="align-middle" data-feather="calendar"></i>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="mt-1 mb-3">{{ $registration_period }}</h1>
+                <div class="mb-0">
+                    <a href="{{ url('admin/periode') }}">Lihat Data</a>
                 </div>
             </div>
         </div>
