@@ -36,11 +36,6 @@
                             <td>{{ $loop->iteration }}</td>
                             <td class="text-nowrap">{{ $ekstra->name }}</td>
                             <td>{{ $ekstra->description }}</td>
-                            {{-- <td>
-                                @foreach($ekstra->pembina as $pb)
-                                <span class="badge bg-primary">{{ $pb->name }}</span>
-                                @endforeach
-                            </td> --}}
                             <td>{{ $ekstra->approvedParticipants->count() }} / {{ $ekstra->quota }}</td>
                             <td class="text-nowrap">
                                 {{-- View --}}

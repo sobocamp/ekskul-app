@@ -391,7 +391,10 @@ class EkstrakurikulerController extends Controller
      */
     public function ekstrakurikulerSemua()
     {
-        $extracurriculars = Extracurricular::paginate(10);
+        $extracurriculars = Extracurricular::when(request()->search, function ($query) {
+                $query->where('name', 'like', '%' . request()->search . '%');
+            })
+            ->paginate(10);
 
         return $this->render('siswa.ekstrakurikuler.list', [
             'title' => 'Semua Ekstrakurikuler',

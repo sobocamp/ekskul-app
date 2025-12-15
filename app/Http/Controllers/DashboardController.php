@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Extracurricular;
+use App\Models\RegistrationPeriod;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -21,7 +24,10 @@ class DashboardController extends Controller
     {
         // cek role user, lalu pindahkan ke halaman dashboard yang sesuai
         if (Auth::user()->role == 'admin') {
-            return view('admin.dashboard.index');
+            $extracurriculars = Extracurricular::count();
+            $pembina = User::where('role', 'pembina')->count();
+            $registration_period = RegistrationPeriod::count();
+            return view('admin.dashboard.index', compact('extracurriculars', 'pembina', 'registration_period'));
         } elseif (Auth::user()->role == 'pembina') {
             return view('pembina.dashboard.index');
         } elseif (Auth::user()->role == 'siswa') {
